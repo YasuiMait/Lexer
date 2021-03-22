@@ -9,7 +9,7 @@ public class Lexer {
 
     public Lexer init(String text) {
         i = 0;
-        this.text = text;
+        this.text = skipsemicolon(text);
         return this;
     }
 
@@ -34,6 +34,12 @@ public class Lexer {
         while (!isEOT() && Character.isWhitespace(c())) {
             next();
         }
+    }
+    
+    private String skipsemicolon(String text) {
+    	String re_text = text.replace(";", " ");
+		return re_text;
+    	
     }
 
     private boolean isSignStart(char c) {
@@ -103,7 +109,5 @@ public class Lexer {
         }
         return tokens;
     }
-
-    
 
 }
