@@ -35,7 +35,7 @@ public class Lexer {
             next();
         }
     }
-    
+
     private String skipsemicolon(String text) {
     	String re_text = text.replace(";", " ");
 		return re_text;
