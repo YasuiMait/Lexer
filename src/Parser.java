@@ -26,7 +26,7 @@ public class Parser {
 
     private List<Token> tokens;
     private int i;
-    
+
     public Parser init(List<Token> tokens) {
         i = 0;
         this.tokens = new ArrayList<Token>(tokens);
