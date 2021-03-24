@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.*;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
@@ -15,10 +16,20 @@ public class Main {
 
         String text2 = "a = 3 + 4 * 5";
         List<Token> tokens2 = new Lexer().init(text2).tokenize();
-        List<Token> blk = new Parser().init(tokens2).block();
-        for (Token ast : blk) {
+        List<Token> blk1 = new Parser().init(tokens2).block();
+        for (Token ast : blk1) {
             System.out.println(ast.paren());
         }
         // --> (a = (3 + (4 * 5)))
+        
+        
+        String text = "a = 3 + 4 * 5";
+        List<Token> tokens = new Lexer().init(text).tokenize();
+        List<Token> blk2 = new Parser().init(tokens).block();
+        Map<String, Integer> variables = new Interpreter().init(blk2).run();
+        for (Map.Entry<String, Integer> variable : variables.entrySet()) {
+            System.out.println(variable.getKey() + " = " + variable.getValue());
+        // --> a 23
+        }
     }
 }
