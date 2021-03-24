@@ -23,9 +23,9 @@ public class Main {
         // --> (a = (3 + (4 * 5)))
         
         
-        String text = "a = 3 + 4 * 5";
-        List<Token> tokens = new Lexer().init(text).tokenize();
-        List<Token> blk2 = new Parser().init(tokens).block();
+        String text3 = "a = 3 + 4 * 5";
+        List<Token> tokens3 = new Lexer().init(text3).tokenize();
+        List<Token> blk2 = new Parser().init(tokens3).block();
         Map<String, Integer> variables = new Interpreter().init(blk2).run();
         for (Map.Entry<String, Integer> variable : variables.entrySet()) {
             System.out.println(variable.getKey() + " = " + variable.getValue());
