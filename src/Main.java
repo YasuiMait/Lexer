@@ -15,5 +15,6 @@ public class Main {
         List<Token> blk2 = new Parser().init(tokens2).block();
         new Interpreter().init(blk2).run();
         // --> 23
+        System.out.println("a");
     }
 }
