@@ -14,19 +14,20 @@ public class Parser {
 
     public Parser() {
         degrees = new HashMap<>();
+        degrees.put("(", 80);   // <-- Add
         degrees.put("*", 60);
         degrees.put("/", 60);
         degrees.put("+", 50);
         degrees.put("-", 50);
         degrees.put("=", 10);
-        factorKinds = Arrays.asList(new String[] { "digit", "variable" });
+        factorKinds = Arrays.asList(new String[] { "digit", "ident" }); // <-- Update
         binaryKinds = Arrays.asList(new String[] { "sign" });
         rightAssocs = Arrays.asList(new String[] { "=" });
     }
 
     private List<Token> tokens;
     private int i;
-
+    
     public Parser init(List<Token> tokens) {
         i = 0;
         this.tokens = new ArrayList<Token>(tokens);
@@ -50,18 +51,27 @@ public class Parser {
         return t;
     }
 
+    private Token consume(String expectedValue) throws Exception {
+        if (!expectedValue.equals(token().value)) {
+            throw new Exception("Not expected value");
+        }
+        return next();
+    }
+
     private Token lead(Token token) throws Exception {
         if (factorKinds.contains(token.kind)) {
             return token;
-        }
+        } else {
             throw new Exception("The token cannot place there.");
+        }
     }
 
     private int degree(Token t) {
         if (degrees.containsKey(t.value)) {
             return degrees.get(t.value);
+        } else {
+            return 0;
         }
-        return 0;
     }
 
     private Token bind(Token left, Token operator) throws Exception {
@@ -73,8 +83,14 @@ public class Parser {
             }
             operator.right = expression(leftDegree);
             return operator;
+        } else if(operator.kind.equals("paren") && operator.value.equals("(")) {    // <-- Add
+            operator.left = left;
+            operator.right = expression(0);
+            consume(")");
+            return operator;
+        } else {
+            throw new Exception("The token cannot place there.");
         }
-        throw new Exception("The token cannot place there.");
     }
 
     public Token expression(int leftDegree) throws Exception {
@@ -94,5 +110,15 @@ public class Parser {
             blk.add(expression(0));
         }
         return blk;
+    }
+
+    public static void main(String[] args) throws Exception {
+        String text = "a = 3 + 4 * 5";
+        List<Token> tokens = new Lexer().init(text).tokenize();
+        List<Token> blk = new Parser().init(tokens).block();
+        for (Token ast : blk) {
+            System.out.println(ast.paren());
+        }
+        // --> (a = (3 + (4 * 5)))
     }
 }

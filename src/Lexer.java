@@ -9,7 +9,7 @@ public class Lexer {
 
     public Lexer init(String text) {
         i = 0;
-        this.text = skipsemicolon(text);
+        this.text = text;
         return this;
     }
 
@@ -36,27 +36,32 @@ public class Lexer {
         }
     }
 
-    private String skipsemicolon(String text) {
-    	String re_text = text.replace(";", " ");
-		return re_text;
-    	
-    }
-
     private boolean isSignStart(char c) {
         return c == '=' || c == '+' || c == '-' || c == '*' || c == '/';
+    }
+
+    private boolean isParenStart(char c) {
+        return c == '(' || c == ')';
     }
 
     private boolean isDigitStart(char c) throws Exception {
         return Character.isDigit(c);
     }
 
-    private boolean isVariableStart(char c) throws Exception {
+    private boolean isIdentStart(char c) throws Exception {
         return Character.isAlphabetic(c);
     }
 
     private Token sign() throws Exception {
         Token t = new Token();
         t.kind = "sign";
+        t.value = Character.toString(next());
+        return t;
+    }
+
+    private Token paren() throws Exception {
+        Token t = new Token();
+        t.kind = "paren";
         t.value = Character.toString(next());
         return t;
     }
@@ -73,14 +78,14 @@ public class Lexer {
         return t;
     }
 
-    private Token variable() throws Exception {
+    private Token ident() throws Exception {
         StringBuilder b = new StringBuilder();
         b.append(next());
         while (!isEOT() && (Character.isAlphabetic(c()) || Character.isDigit(c()))) {
             b.append(next());
         }
         Token t = new Token();
-        t.kind = "variable";
+        t.kind = "ident";
         t.value = b.toString();
         return t;
     }
@@ -93,8 +98,10 @@ public class Lexer {
             return sign();
         } else if (isDigitStart(c())) {
             return digit();
-        } else if (isVariableStart(c())) {
-            return variable();
+        } else if (isIdentStart(c())) {
+            return ident();
+        } else if (isParenStart(c())) {
+            return paren();
         } else {
             throw new Exception("Not a character for tokens");
         }
@@ -108,6 +115,19 @@ public class Lexer {
             t = nextToken();
         }
         return tokens;
+    }
+
+    public static void main(String[] args) throws Exception {
+        String text = " ans1 = 10 + 20 ";
+        List<Token> tokens = new Lexer().init(text).tokenize();
+        for (Token token : tokens) {
+            System.out.println(token.toString());
+        }
+        // --> ident "ans1"
+        // --> sign "="
+        // --> digit "10"
+        // --> sign "+"
+        // --> digit "20"
     }
 
 }
