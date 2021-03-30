@@ -11,7 +11,8 @@ public class Parser {
     private List<String> factorKinds;
     private List<String> binaryKinds;
     private List<String> rightAssocs;
-    private List<String> unaryOperators;    // <-- Add
+    private List<String> unaryOperators;
+    private List<String> reserved;
 
     public Parser() {
         degrees = new HashMap<>();
@@ -24,12 +25,13 @@ public class Parser {
         factorKinds = Arrays.asList(new String[] { "digit", "ident" });
         binaryKinds = Arrays.asList(new String[] { "sign" });
         rightAssocs = Arrays.asList(new String[] { "=" });
-        unaryOperators = Arrays.asList(new String[] { "+", "-" }); // <-- Add
+        unaryOperators = Arrays.asList(new String[] { "+", "-" });
+        reserved = Arrays.asList(new String[] { "function" });
     }
 
     private List<Token> tokens;
     private int i;
-    
+
     public Parser init(List<Token> tokens) {
         i = 0;
         this.tokens = new ArrayList<Token>(tokens);
@@ -61,19 +63,44 @@ public class Parser {
     }
 
     private Token lead(Token token) throws Exception {
-        if (factorKinds.contains(token.kind)) {
+        if (token.kind.equals("ident") && token.value.equals("void")) {
+            return func(token);
+        } else if (factorKinds.contains(token.kind)) {
             return token;
-        } else if (unaryOperators.contains(token.value)) { // <-- Add
+        } else if (unaryOperators.contains(token.value)) {
             token.kind = "unary";
             token.left = expression(70);
             return token;
-        } else if(token.kind.equals("paren") && token.value.equals("(")) {  // <-- Add
+        } else if (token.kind.equals("paren") && token.value.equals("(")) {
             Token expr = expression(0);
             consume(")");
             return expr;
         } else {
             throw new Exception("The token cannot place there.");
         }
+    }
+
+    private Token func(Token token) throws Exception {
+        token.kind = "func";
+        token.ident = ident();
+        consume("(");
+        token.param = ident();
+        consume(")");
+        consume("{");
+        token.block = block();
+        consume("}");
+        return token;
+    }
+
+    private Token ident() throws Exception {
+        Token id = next();
+        if (!id.kind.equals("ident")) {
+            throw new Exception("Not an identical token.");
+        }
+        if (reserved.contains(id.value)) {
+            throw new Exception("The token was reserved.");
+        }
+        return id;
     }
 
     private int degree(Token t) {
@@ -93,7 +120,7 @@ public class Parser {
             }
             operator.right = expression(leftDegree);
             return operator;
-        } else if(operator.kind.equals("paren") && operator.value.equals("(")) {
+        } else if (operator.kind.equals("paren") && operator.value.equals("(")) {
             operator.left = left;
             operator.right = expression(0);
             consume(")");
@@ -122,13 +149,5 @@ public class Parser {
         return blk;
     }
 
-    public static void main(String[] args) throws Exception {
-        String text = "a = (3 + 4) * 5";
-        List<Token> tokens = new Lexer().init(text).tokenize();
-        List<Token> blk = new Parser().init(tokens).block();
-        for (Token ast : blk) {
-            System.out.println(ast.paren());
-        }
-        // --> (a = (3 + (4 * 5)))
-    }
+   
 }

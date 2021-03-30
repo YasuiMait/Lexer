@@ -23,6 +23,18 @@ public class Main {
         List<Token> tokens3 = new Lexer().init(text2).tokenize();
         List<Token> blk3 = new Parser().init(tokens3).block();
         new Interpreter().init(blk3).run();
-        
+
+
+        String text3 = "";
+        text3 += "v = 0";
+        text3 += "void addV(num) {";
+        text3 += "  v = v + num";
+        text3 += "}";
+        text3 += "addV(3)";
+        text3 += "printf(v)";
+        List<Token> tokens4 = new Lexer().init(text3).tokenize();
+        List<Token> blk4 = new Parser().init(tokens4).block();
+        new Interpreter().init(blk4).run();
+        // --> 3
     }
 }
