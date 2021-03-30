@@ -10,7 +10,7 @@ public class Main {
         }
         System.out.println( new Interpreter().init(blk1).run() );
 
-        text1 += "println(a)";
+        text1 += "printf(a)";
         List<Token> tokens2 = new Lexer().init(text1).tokenize();
         List<Token> blk2 = new Parser().init(tokens2).block();
         new Interpreter().init(blk2).run();

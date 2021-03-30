@@ -107,6 +107,7 @@ public class Interpreter {
 
     private Object invoke(Token expr) throws Exception {
         Func f = func(expression(expr.left));
+        
         Integer value = value(expression(expr.right));
         return f.invoke(value);
     }
@@ -137,7 +138,7 @@ public class Interpreter {
 
     public static class Println extends Func {
         public Println() {
-            name = "println";
+            name = "printf";
         }
 
         @Override
