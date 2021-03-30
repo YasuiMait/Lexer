@@ -26,7 +26,7 @@ public class Parser {
         binaryKinds = Arrays.asList(new String[] { "sign" });
         rightAssocs = Arrays.asList(new String[] { "=" });
         unaryOperators = Arrays.asList(new String[] { "+", "-" });
-        reserved = Arrays.asList(new String[] { "function" });
+        reserved = Arrays.asList(new String[] { "void" });
     }
 
     private List<Token> tokens;
