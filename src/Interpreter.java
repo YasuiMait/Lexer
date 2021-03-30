@@ -107,7 +107,6 @@ public class Interpreter {
 
     private Object invoke(Token expr) throws Exception {
         Func f = func(expression(expr.left));
-        
         Integer value = value(expression(expr.right));
         return f.invoke(value);
     }
@@ -148,5 +147,12 @@ public class Interpreter {
         }
     }
 
-   
+    public static void main(String[] args) throws Exception {
+        String text = "a = (3 + 4) * 5";    // <-- Update
+        text += "println(a)";
+        List<Token> tokens = new Lexer().init(text).tokenize();
+        List<Token> blk = new Parser().init(tokens).block();
+        new Interpreter().init(blk).run();
+        // --> 35
+    }
 }
