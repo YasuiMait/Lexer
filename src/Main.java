@@ -14,7 +14,7 @@ public class Main {
         List<Token> tokens2 = new Lexer().init(text1).tokenize();
         List<Token> blk2 = new Parser().init(tokens2).block();
         new Interpreter().init(blk2).run();
-        // --> 23
+        // --> 23 ‚ ‚¢‚¤‚¦‚¨
         //a
     }
 }
