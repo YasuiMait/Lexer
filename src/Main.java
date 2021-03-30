@@ -17,5 +17,12 @@ public class Main {
         new Interpreter().init(blk2).run();
         // --> 35
         //a
+
+        String text2 = "a = -1";    // <-- Update
+        text2 += "printf(a)";
+        List<Token> tokens3 = new Lexer().init(text2).tokenize();
+        List<Token> blk3 = new Parser().init(tokens3).block();
+        new Interpreter().init(blk3).run();
+        
     }
 }
