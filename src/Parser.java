@@ -61,17 +61,15 @@ public class Parser {
     private Token lead(Token token) throws Exception {
         if (factorKinds.contains(token.kind)) {
             return token;
-        } else {
-            throw new Exception("The token cannot place there.");
         }
+		throw new Exception("The token cannot place there.");
     }
 
     private int degree(Token t) {
         if (degrees.containsKey(t.value)) {
             return degrees.get(t.value);
-        } else {
-            return 0;
         }
+		return 0;
     }
 
     private Token bind(Token left, Token operator) throws Exception {
