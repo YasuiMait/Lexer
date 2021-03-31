@@ -23,9 +23,13 @@ public class Interpreter {
         return variables;
     }
 
-    public Object body(List<Token> body, boolean[] ret) throws Exception {	//retをbooleanの配列型にしたのは、呼び出し元に値を返すためです。
-        for (Token exprs : body) {											//本来の配列を使う目的ではない、邪道な使い方をしています。
-            if (exprs.kind.equals("ret")) {									//C#のrefキーワードをつけた引数のような働きを、簡単にさせたくてそうしました。
+    /*retをbooleanの配列型にしたのは、呼び出し元に値を返すためです。
+     * 本来の配列を使う目的ではない、邪道な使い方をしています。
+     * C#のrefキーワードをつけた引数のような働きを、簡単にさせたくてそうしました。
+     */
+    public Object body(List<Token> body, boolean[] ret) throws Exception {
+        for (Token exprs : body) {
+            if (exprs.kind.equals("ret")) {
                 if (ret == null) {
                     throw new Exception("Can not return");
                 }
