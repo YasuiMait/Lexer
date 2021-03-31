@@ -26,7 +26,7 @@ public class Parser {
         binaryKinds = Arrays.asList(new String[] { "sign" });
         rightAssocs = Arrays.asList(new String[] { "=" });
         unaryOperators = Arrays.asList(new String[] { "+", "-" });
-        reserved = Arrays.asList(new String[] { "void" });
+        reserved = Arrays.asList(new String[] { "function", "return" });    // <-- Update
     }
 
     private List<Token> tokens;
@@ -55,12 +55,6 @@ public class Parser {
         return t;
     }
 
-    private Token back() throws Exception {		//“r’†
-    	--i;
-    	Token t = token();
-    	return t;
-    }
-
     private Token consume(String expectedValue) throws Exception {
         if (!expectedValue.equals(token().value)) {
             throw new Exception("Not expected value");
@@ -71,6 +65,12 @@ public class Parser {
     private Token lead(Token token) throws Exception {
         if (token.kind.equals("ident") && token.value.equals("void")) {
             return func(token);
+        } else if (token.kind.equals("ident") && token.value.equals("return")) {    // <-- Add
+            token.kind = "ret";
+            if (!token().kind.equals("eob")) {
+                token.left = expression(0);
+            }
+            return token;
         } else if (factorKinds.contains(token.kind)) {
             return token;
         } else if (unaryOperators.contains(token.value)) {
@@ -105,26 +105,13 @@ public class Parser {
         return token;
     }
 
-    private Token ident() throws Exception {	//“r’†
-          Token id = next();
+    private Token ident() throws Exception {
+        Token id = next();
         if (!id.kind.equals("ident")) {
             throw new Exception("Not an identical token.");
         }
         if (reserved.contains(id.value)) {
-        	Token id2 = next();
-        	System.out.println(id2 + "‚ ");
-        	Token id3 = back();
-        	System.out.println(id3 + "‚¢");
-        	Token id4 = back();
-        	id4 = back();
-        	System.out.println(id4 + "‚¤");
-        	Token id5 = next();
-        	id5 = next();
-        	System.out.println(id5 + "‚¦");
-        	System.out.println(id2.value.equals(")"));
-        	if(!(id2.value.equals(")") && id4.value.equals("("))) {
-        		throw new Exception("The token was reserved.");
-        	}
+            throw new Exception("The token was reserved.");
         }
         return id;
     }
@@ -182,5 +169,6 @@ public class Parser {
         return blk;
     }
 
-
+    
+    
 }

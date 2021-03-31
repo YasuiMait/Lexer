@@ -19,14 +19,34 @@ public class Interpreter {
     }
 
     public Map<String, Variable> run() throws Exception {
-        body(body);
+        body(body, null); // <-- Update
         return variables;
     }
 
-    public void body(List<Token> body) throws Exception {
-        for (Token exprs : body) {
-            expression(exprs);
+    public Object body(List<Token> body, boolean[] ret) throws Exception {	//retをbooleanの配列型にしたのは、呼び出し元に値を返すためです。
+        for (Token exprs : body) {											//本来の配列を使う目的ではない、邪道な使い方をしています。
+            if (exprs.kind.equals("ret")) {									//C#のrefキーワードをつけた引数のような働きを、簡単にさせたくてそうしました。
+                if (ret == null) {
+                    throw new Exception("Can not return");
+                }
+                ret[0] = true;
+                if (exprs.left == null) {
+                    return null;
+                } else {
+                    return expression(exprs.left);
+                }
+            } else {
+                expression(exprs);
+            }
         }
+        return null;
+    }
+
+    public Object ret(Token token) throws Exception {
+        if (token.left == null) {
+            return null;
+        }
+        return expression(token.left);
     }
 
     public Object expression(Token expr) throws Exception {
@@ -77,7 +97,7 @@ public class Interpreter {
         if (variables.containsKey(name)) {
             throw new Exception("Name was used");
         }
-        List<String> paramCheckList = new ArrayList<String>(); // <-- Add
+        List<String> paramCheckList = new ArrayList<String>();
         for (Token p : token.params) {
             String param = p.value;
             if (paramCheckList.contains(param)) {
@@ -88,7 +108,7 @@ public class Interpreter {
         DynamicFunc func = new DynamicFunc();
         func.context = this;
         func.name = name;
-        func.params = token.params; // <-- Update
+        func.params = token.params;
         func.block = token.block;
         functions.put(name, func);
         return null;
@@ -209,22 +229,10 @@ public class Interpreter {
                     v.value = null;
                 }
             }
-            context.body(block);
-            return null;
+            boolean[] ret = new boolean[1]; // <-- Update
+            return context.body(block, ret); // <-- Update
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        String text = "";
-        text += "v = 0";
-        text += "function add3(a1, a2, a3) {";
-        text += "  v = a1 + a2 + a3";
-        text += "}";
-        text += "add3(1,2,3)";
-        text += "println(v)";
-        List<Token> tokens = new Lexer().init(text).tokenize();
-        List<Token> blk = new Parser().init(tokens).block();
-        new Interpreter().init(blk).run();
-        // --> 6
-    }
+
 }
