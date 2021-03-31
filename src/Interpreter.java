@@ -23,9 +23,10 @@ public class Interpreter {
         return variables;
     }
 
-    /*retをbooleanの配列型にしたのは、呼び出し元に値を返すためです。
-     * 本来の配列を使う目的ではない、邪道な使い方をしています。
-     * C#のrefキーワードをつけた引数のような働きを、簡単にさせたくてそうしました。
+    /*retをbooleanの配列型にしたのは、呼び出し元に値を返すため。
+     * 本来の配列を使う目的ではない、邪道な使い方してる。
+     * C#のrefキーワードをつけた引数のような働きを、簡単にさせるため。
+     * 改善案募集中
      */
     public Object body(List<Token> body, boolean[] ret) throws Exception {
         for (Token exprs : body) {
