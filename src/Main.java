@@ -1,3 +1,5 @@
+//スレッドは絶対にやめろ
+//スレッドセーフじゃない
 import java.util.List;
 
 public class Main {
