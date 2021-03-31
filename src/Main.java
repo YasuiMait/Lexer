@@ -25,16 +25,28 @@ public class Main {
         new Interpreter().init(blk3).run();
 
 
-        String text3 = "";
-        text3 += "v = 0";
-        text3 += "void addV(num) {";
-        text3 += "  v = v + num";
-        text3 += "}";
-        text3 += "addV(3)";
-        text3 += "printf(v)";
-        List<Token> tokens4 = new Lexer().init(text3).tokenize();
-        List<Token> blk4 = new Parser().init(tokens4).block();
-        new Interpreter().init(blk4).run();
-        // --> 3
+        String text = "";
+        text += "v = 0";
+        text += "void add3(a1, a2, a3) {";
+        text += "  v = a1 + a2 + a3";
+        text += "}";
+        text += "add3(1,2,3)";
+        text += "printf(v)";
+        List<Token> tokens = new Lexer().init(text).tokenize();
+        List<Token> blk = new Parser().init(tokens).block();
+        new Interpreter().init(blk).run();
+        // --> 6
+        
+        String T = "";
+        T += "v = 0";
+        T += "void add3(void) {";
+        T += "v = 1";
+        T += "}";
+        T += "add3()";
+        T += "printf(v)";
+        List<Token> tokens5 = new Lexer().init(T).tokenize();
+        List<Token> blk5 = new Parser().init(tokens5).block();
+        new Interpreter().init(blk5).run();
+        // --> 1
     }
 }

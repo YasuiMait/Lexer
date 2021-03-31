@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class Interpreter {
             return digit(expr);
         } else if (expr.kind.equals("ident")) {
             return ident(expr);
-        } else if (expr.kind.equals("func")) { // <-- Add
+        } else if (expr.kind.equals("func")) {
             return func(expr);
         } else if (expr.kind.equals("paren")) {
             return invoke(expr);
@@ -76,10 +77,18 @@ public class Interpreter {
         if (variables.containsKey(name)) {
             throw new Exception("Name was used");
         }
+        List<String> paramCheckList = new ArrayList<String>(); // <-- Add
+        for (Token p : token.params) {
+            String param = p.value;
+            if (paramCheckList.contains(param)) {
+                throw new Exception("Parameter name was used");
+            }
+            paramCheckList.add(param);
+        }
         DynamicFunc func = new DynamicFunc();
         func.context = this;
         func.name = name;
-        func.param = token.param;
+        func.params = token.params; // <-- Update
         func.block = token.block;
         functions.put(name, func);
         return null;
@@ -139,8 +148,11 @@ public class Interpreter {
 
     private Object invoke(Token expr) throws Exception {
         Func f = func(expression(expr.left));
-        Integer value = value(expression(expr.right));
-        return f.invoke(value);
+        List<Object> values = new ArrayList<Object>();
+        for (Token arg : expr.params) {
+            values.add(value(expression(arg)));
+        }
+        return f.invoke(values);
     }
 
     public Func func(Object value) throws Exception {
@@ -164,7 +176,7 @@ public class Interpreter {
     public static abstract class Func {
         public String name;
 
-        abstract public Object invoke(Object arg) throws Exception;
+        abstract public Object invoke(List<Object> args) throws Exception;
     }
 
     public static class Println extends Func {
@@ -173,7 +185,8 @@ public class Interpreter {
         }
 
         @Override
-        public Object invoke(Object arg) throws Exception {
+        public Object invoke(List<Object> args) throws Exception {
+            Object arg = args.size() > 0 ? args.get(0) : null;
             System.out.println(arg);
             return null;
         }
@@ -182,17 +195,36 @@ public class Interpreter {
     public static class DynamicFunc extends Func {
 
         public Interpreter context;
-        public Token param;
+        public List<Token> params;
         public List<Token> block;
 
         @Override
-        public Object invoke(Object arg) throws Exception {
-            Variable v = context.variable(context.ident(param));
-            v.value = context.value(arg);
+        public Object invoke(List<Object> args) throws Exception {
+            for (int i = 0; i < params.size(); ++i) {
+                Token param = params.get(i);
+                Variable v = context.variable(context.ident(param));
+                if (i < args.size()) {
+                    v.value = context.value(args.get(i));
+                } else {
+                    v.value = null;
+                }
+            }
             context.body(block);
             return null;
         }
     }
 
-
+    public static void main(String[] args) throws Exception {
+        String text = "";
+        text += "v = 0";
+        text += "function add3(a1, a2, a3) {";
+        text += "  v = a1 + a2 + a3";
+        text += "}";
+        text += "add3(1,2,3)";
+        text += "println(v)";
+        List<Token> tokens = new Lexer().init(text).tokenize();
+        List<Token> blk = new Parser().init(tokens).block();
+        new Interpreter().init(blk).run();
+        // --> 6
+    }
 }
