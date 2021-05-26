@@ -1,5 +1,5 @@
-//ƒXƒŒƒbƒh‚Íâ‘Î‚É‚â‚ß‚ë
-//ƒXƒŒƒbƒhƒZ[ƒt‚¶‚á‚È‚¢
+
+//ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ã˜ã‚ƒãªã„
 import java.util.List;
 
 public class Main {
