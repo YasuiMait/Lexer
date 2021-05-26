@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * あいうえお
+ * 字句解析を行うクラス
  */
 public class Lexer {
 
