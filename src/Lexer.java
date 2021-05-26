@@ -14,6 +14,13 @@ public class Lexer {
 	private String text;
 	private int i;
 
+    /**
+	 * initメソッド
+	 * プログラムになっている文字列を保持する、textフィールドと
+	 * 文字列をなぞっていくためのインデックスになるiフィールドの初期化
+	 * @param text プログラムになっている文字列を保持する文字列
+	 * @return this 自分自身をreturnする(メソッドチェーン)
+	 */
 	public Lexer init(String text) {
 		i = 0;
 		this.text = text;
