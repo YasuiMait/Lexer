@@ -5,7 +5,7 @@
 import java.util.ArrayList;
 import java.util.List;
 /**
- * š‹å‰ğÍ‚ğs‚¤ƒNƒ‰ƒX
+ * ‚ ‚¢‚¤‚¦‚¨
  */
 public class Lexer {
 
