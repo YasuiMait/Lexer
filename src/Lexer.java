@@ -1,4 +1,7 @@
-
+/**
+ * @author Yasui Maito
+ * @version 0.0.1
+ */
 import java.util.ArrayList;
 import java.util.List;
 
